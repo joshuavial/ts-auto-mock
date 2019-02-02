@@ -63,7 +63,7 @@ export class MockDefiner {
 
 		const key: string = this._getMockFactoryId(thisFileName, node, declaration as ts.Declaration);
 
-		return ts.createCall(
+		const callFactory = ts.createCall(
 			ts.createPropertyAccess(
 				this._mockRepositoryAccess(thisFileName),
 				ts.createIdentifier('getFactory')
@@ -71,6 +71,15 @@ export class MockDefiner {
 			[],
 			[ts.createStringLiteral(key)]
 		);
+
+		const nnode = (node as ts.TypeReferenceNode);
+
+		const arg = nnode.typeArguments[0];
+
+		const des = GetDescriptor(arg);
+
+
+		return ts.createCall(callFactory, [], [des]);
 	}
 
 	private _mockRepositoryAccess(filename: string): ts.Expression {
@@ -97,11 +106,19 @@ export class MockDefiner {
 
 		const descriptor = GetPossibleDescriptor(type);
 
+		const fn = ts.createFunctionExpression(undefined, undefined, undefined, undefined, [], undefined,
+			ts.createBlock(
+				[ts.createReturn(descriptor)]
+			)
+		);
+
+		const test = ts.createParameter([], [], undefined, "sss");
+		
 		this._factoryRegistrationsPerFile[thisFileName].push({
 			key: declaration,
-			factory: ts.createFunctionExpression(undefined, undefined, undefined, undefined, [], undefined,
+			factory: ts.createFunctionExpression(undefined, undefined, undefined, undefined, [test], undefined,
 				ts.createBlock(
-					[ts.createReturn(descriptor)]
+					[ts.createReturn(fn)]
 				)
 			)
 		});

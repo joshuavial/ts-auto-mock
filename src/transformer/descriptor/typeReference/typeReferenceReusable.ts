@@ -7,7 +7,7 @@ import { GetMockFactoryCall } from "../../mockFactoryCall/mockFactoryCall";
 import { TypescriptHelper } from '../helper/helper';
 
 export function GetTypeReferenceDescriptorReusable(node: ts.TypeReferenceNode): ts.Expression {
-    TypeReferenceCache.instance.addIfPresentForTypeReference(node);
+    //TypeReferenceCache.instance.addIfPresentForTypeReference(node);
 
     if (isTypeReusable(node)) {
         return GetMockFactoryCall(node);

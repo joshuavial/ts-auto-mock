@@ -55,6 +55,7 @@ export function GetDescriptor(node: ts.Node): ts.Expression {
 		case ts.SyntaxKind.ImportSpecifier:
 			return GetImportDescriptor(node as ts.ImportSpecifier);
 		case ts.SyntaxKind.TypeParameter:
+			return ts.createLiteral("ERROR - Type parameter should not be handled by the descriptor directly")
 			return GetTypeParameterDescriptor(node as ts.TypeParameterDeclaration);
 		case ts.SyntaxKind.ImportClause:
 			return GetImportDescriptor(node as ts.ImportClause);

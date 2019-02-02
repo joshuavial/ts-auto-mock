@@ -4,14 +4,20 @@ import { GetDescriptor } from "../descriptor";
 import { GetMockDeclarationName, GetMockSetParameterName } from './mockDeclarationName';
 
 export function GetMockProperty(member: ts.PropertyDeclaration): Array<ts.GetAccessorDeclaration | ts.SetAccessorDeclaration> {
-	const descriptor: ts.Expression = GetDescriptor(member);
-	
+	let descriptor: ts.Expression;
+
+	if (member.type.kind === ts.SyntaxKind.TypeReference) {
+		console.log(member.type);
+		descriptor = ts.createIdentifier("sss");
+	} else {
+		descriptor = GetDescriptor(member);
+	}
+
 	const propertyName = member.name as ts.Identifier;
 	const variableDeclarationName = GetMockDeclarationName(propertyName);
 	const setVariableParameterName = GetMockSetParameterName(propertyName);
 
-    const expressionGetAssignment = ts.createBinary(variableDeclarationName, ts.SyntaxKind.EqualsToken, descriptor);
-    
+    const expressionGetAssignment = ts.createBinary(variableDeclarationName, ts.SyntaxKind.EqualsToken, descriptor);		
 	const getExpressionBody = ts.createBinary(variableDeclarationName, ts.SyntaxKind.BarBarToken, expressionGetAssignment);
 	const setExpressionBody = ts.createBinary(variableDeclarationName, ts.SyntaxKind.EqualsToken, setVariableParameterName);
 
